@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta Key System - CCRAFT</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0b0b0b;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* صفحة التحقق */
+        #captcha-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 11, 11, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .captcha-box {
+            background: #141414;
+            border: 1px solid #262626;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            max-width: 340px;
+            width: 90%;
+        }
+
+        .captcha-box h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+
+        .robot-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .robot-btn:hover {
+            background: #d4d4d4;
+        }
+
+        /* الصفحة الرئيسية */
+        .main-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            display: none; /* مخفية حتى يتم التحقق */
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-icon {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            background: #121212;
+            box-shadow: 0 0 20px rgba(255,255,255,0.05);
+        }
+
+        .header-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: #ffffff;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        h1 {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .label {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 10px;
+            text-align: right;
+            display: block;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #fff;
+        }
+
+        .paste-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 0 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .paste-btn:hover {
+            background: #333;
+        }
+
+        .action-btn {
+            width: 100%;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+
+        .action-btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة التحقق (لست روبوت) -->
+    <div id="captcha-screen">
+        <div class="captcha-box">
+            <h2>الرجاء إثبات أنك لست روبوت للمتابعة</h2>
+            <button class="robot-btn" onclick="passCaptcha()">أنا لست روبوت ✓</button>
+        </div>
+    </div>
+
+    <!-- الصفحة الرئيسية -->
+    <div class="main-container" id="main-content">
+        <div class="header-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.778-7.778zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+        </div>
+        <h1>CCRAFT SPACE</h1>
+        <p class="subtitle">عمل مفتاح دلتا في ثوانٍ</p>
+
+        <div class="card">
+            <span class="label">رابط Delta Keysystem (Platorest)</span>
+            <div class="input-group">
+                <button class="paste-btn" onclick="pasteLink()">لصق</button>
+                <input type="text" id="delta-link" placeholder="https://auth.platorest...">
+            </div>
+            <button class="action-btn" onclick="startKeyProcess()">ابدأ عمل المفتاح</button>
+        </div>
+    </div>
+
+    <script>
+        function passCaptcha() {
+            const captchaScreen = document.getElementById('captcha-screen');
+            const mainContent = document.getElementById('main-content');
+            
+            captchaScreen.style.opacity = '0';
+            setTimeout(() => {
+                captchaScreen.style.display = 'none';
+                mainContent.style.display = 'flex';
+            }, 500);
+        }
+
+        async function pasteLink() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('delta-link').value = text;
+            } catch (err) {
+                alert('فشل اللصق تلقائياً، يرجى اللصق يدوياً.');
+            }
+        }
+
+        function startKeyProcess() {
+            const link = document.getElementById('delta-link').value;
+            if(!link) {
+                alert('الرجاء إدخال الرابط أولاً!');
+                return;
+            }
+            // هنا تقدر تربط الرابط بالعملية اللي تبغاها
+            window.location.href = link;
+        }
+    </script>
+</body>
+</html>
