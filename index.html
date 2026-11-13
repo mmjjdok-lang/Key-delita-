@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -22,7 +23,7 @@
             overflow-x: hidden;
         }
 
-        /* صفحة التحقق */
+        /* صفحة التحقق (أنا لست روبوت) */
         #captcha-screen {
             position: fixed;
             top: 0;
@@ -77,7 +78,7 @@
             width: 100%;
             max-width: 420px;
             padding: 20px;
-            display: none; /* مخفية حتى يتم التحقق */
+            display: none; /* مخفية حتى يتم تجاوز التحقق */
             flex-direction: column;
             align-items: center;
             animation: fadeIn 0.6s ease forwards;
@@ -194,11 +195,36 @@
             background: #e0e0e0;
             transform: translateY(-1px);
         }
+
+        /* قسم عرض النتيجة والمفتاح */
+        #loading-section, #result-section {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: #bbb;
+            margin-bottom: 10px;
+        }
+
+        .key-box {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            padding: 12px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 15px;
+            color: #00ffcc;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- شاشة التحقق (لست روبوت) -->
+    <!-- شاشة التحقق -->
     <div id="captcha-screen">
         <div class="captcha-box">
             <h2>الرجاء إثبات أنك لست روبوت للمتابعة</h2>
@@ -212,7 +238,7 @@
             <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.778-7.778zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
         </div>
         <h1>CCRAFT SPACE</h1>
-        <p class="subtitle">عمل مفتاح دلتا في ثوانٍ</p>
+        <p class="subtitle">الحصول على مفتاح دلتا فوراً</p>
 
         <div class="card">
             <span class="label">رابط Delta Keysystem (Platorest)</span>
@@ -220,7 +246,20 @@
                 <button class="paste-btn" onclick="pasteLink()">لصق</button>
                 <input type="text" id="delta-link" placeholder="https://auth.platorest...">
             </div>
-            <button class="action-btn" onclick="startKeyProcess()">ابدأ عمل المفتاح</button>
+            
+            <button class="action-btn" id="start-btn" onclick="processKey()">إظهار المفتاح</button>
+
+            <!-- حالة المعالجة -->
+            <div id="loading-section">
+                <p class="status-text">جاري معالجة الرابط واستخراج المفتاح...</p>
+            </div>
+
+            <!-- نتيجة المفتاح وزر النسخ -->
+            <div id="result-section">
+                <span class="label" style="color: #00ffcc;">تم استخراج المفتاح بنجاح!</span>
+                <div class="key-box" id="final-key">DELTA-KEY-XYZ12345</div>
+                <button class="action-btn" onclick="copyKey()" style="background: #00ffcc; color: #000;">نسخ المفتاح</button>
+            </div>
         </div>
     </div>
 
@@ -245,15 +284,16 @@
             }
         }
 
-        function startKeyProcess() {
+        function processKey() {
             const link = document.getElementById('delta-link').value;
             if(!link) {
                 alert('الرجاء إدخال الرابط أولاً!');
                 return;
             }
-            // هنا تقدر تربط الرابط بالعملية اللي تبغاها
-            window.location.href = link;
-        }
-    </script>
-</body>
-</html>
+
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('loading-section').style.display = 'block';
+
+            // محاكاة سريعة لإعطاء المفتاح وتجهيز زر النسخ
+            setTimeout(() => {
+                const generatedKey = "DELTA
